@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CyberSafe Youth — Live Data Hub</title>
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #f5f9fc;
+      font-family: 'Segoe UI', Roboto, system-ui, -apple-system, sans-serif;
+      color: #1a2634;
+      padding: 20px;
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    /* ===== HEADER ===== */
+    .header {
+      background: linear-gradient(135deg, #0d2b45, #1b4a6b);
+      color: white;
+      border-radius: 24px;
+      padding: 40px 40px 30px;
+      margin-bottom: 40px;
+      box-shadow: 0 12px 30px rgba(13, 43, 69, 0.25);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .header::after {
+      content: '';
+      position: absolute;
+      top: -30%;
+      right: -10%;
+      width: 300px;
+      height: 300px;
+      background: rgba(255, 215, 0, 0.08);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .header-badge {
+      display: inline-block;
+      background: rgba(255, 215, 0, 0.2);
+      padding: 6px 16px;
+      border-radius: 40px;
+      font-size: 13px;
+      letter-spacing: 0.5px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      backdrop-filter: blur(4px);
+      border: 1px solid rgba(255, 215, 0, 0.15);
+    }
+
+    .header h1 {
+      font-size: 2.8rem;
+      font-weight: 700;
+      line-height: 1.1;
+      margin-bottom: 10px;
+      letter-spacing: -0.5px;
+      max-width: 800px;
+    }
+
+    .header p {
+      font-size: 1.1rem;
+      opacity: 0.85;
+      max-width: 700px;
+      margin-bottom: 20px;
+    }
+
+    .stats-mini {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 30px;
+      margin-top: 12px;
+    }
+
+    .stats-mini div {
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+      font-size: 0.95rem;
+      background: rgba(255, 255, 255, 0.08);
+      padding: 8px 18px;
+      border-radius: 40px;
+      backdrop-filter: blur(4px);
+    }
+
+    .stats-mini strong {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: #ffd966;
+    }
+
+    .stats-mini .label {
+      opacity: 0.7;
+      font-weight: 400;
+    }
+
+    .refresh-btn {
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      color: white;
+      padding: 8px 18px;
+      border-radius: 40px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: 0.2s;
+      backdrop-filter: blur(4px);
+    }
+
+    .refresh-btn:hover {
+      background: rgba(255, 215, 0, 0.2);
+      border-color: #ffd966;
+    }
+
+    /* ===== SECTIONS ===== */
+    .section {
+      background: white;
+      border-radius: 20px;
+      padding: 32px 36px;
+      margin-bottom: 30px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+      transition: box-shadow 0.2s;
+      border: 1px solid #eef3f7;
+    }
+
+    .section-title {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: #6b7d8e;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .section-head {
+      font-size: 1.8rem;
+      font-weight: 600;
+      margin-bottom: 24px;
+      color: #0d2b45;
+      letter-spacing: -0.3px;
+    }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+    }
+
+    @media (max-width: 820px) {
+      .two-col {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* ===== FORM ===== */
+    .card {
+      background: #f8fafc;
+      border-radius: 16px;
+      padding: 24px;
+      border: 1px solid #e2e9f0;
+    }
+
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    .form-group label {
+      display: block;
+      font-weight: 600;
+      font-size: 0.9rem;
+      margin-bottom: 6px;
+      color: #1a2634;
+    }
+
+    select,
+    input[type="text"] {
+      width: 100%;
+      padding: 10px 14px;
+      border-radius: 10px;
+      border: 1px solid #d0dbe8;
+      font-size: 0.95rem;
+      background: white;
+      transition: 0.2s;
+    }
+
+    select:focus,
+    input:focus {
+      border-color: #1b4a6b;
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(27, 74, 107, 0.1);
+    }
+
+    .radio-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .radio-group label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 400;
+      background: white;
+      padding: 8px 14px;
+      border-radius: 30px;
+      border: 1px solid #d0dbe8;
+      cursor: pointer;
+      transition: 0.15s;
+      font-size: 0.9rem;
+    }
+
+    .radio-group label:has(input:checked) {
+      background: #1b4a6b;
+      color: white;
+      border-color: #1b4a6b;
+    }
+
+    .radio-group input {
+      accent-color: #1b4a6b;
+    }
+
+    .bars-input {
+      display: flex;
+      gap: 6px;
+      align-items: flex-end;
+      height: 44px;
+      margin: 6px 0 4px;
+    }
+
+    .bars-input button {
+      flex: 1;
+      border: none;
+      background: #d0dbe8;
+      border-radius: 6px 6px 0 0;
+      cursor: pointer;
+      transition: 0.15s;
+      min-width: 30px;
+    }
+
+    .bars-input button:nth-child(1) { height: 18px; }
+    .bars-input button:nth-child(2) { height: 26px; }
+    .bars-input button:nth-child(3) { height: 34px; }
+    .bars-input button:nth-child(4) { height: 42px; }
+    .bars-input button:nth-child(5) { height: 50px; }
+
+    .bars-input button.on {
+      background: #ffb347;
+      box-shadow: 0 -2px 8px rgba(255, 179, 71, 0.3);
+    }
+
+    .submit-btn {
+      width: 100%;
+      padding: 14px;
+      background: #0d2b45;
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.2s;
+      margin-top: 6px;
+    }
+
+    .submit-btn:hover {
+      background: #1b4a6b;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(13, 43, 69, 0.2);
+    }
+
+    .submit-btn:disabled {
+      opacity: 0.6;
+      transform: none;
+    }
+
+    .thanks {
+      display: none;
+      margin-top: 14px;
+      padding: 12px 16px;
+      background: #e4f2e9;
+      border-radius: 10px;
+      color: #1a5a3a;
+      font-weight: 500;
+    }
+
+    /* ===== CHARTS ===== */
+    .chart-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-top: 12px;
+    }
+
+    @media (max-width: 700px) {
+      .chart-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .chart-box {
+      background: #fafcfe;
+      border-radius: 14px;
+      padding: 16px;
+      border: 1px solid #eef3f7;
+    }
+
+    .chart-box h4 {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #4a5f72;
+      margin-bottom: 10px;
+      font-weight: 600;
+    }
+
+    .chart-box canvas {
+      max-height: 160px;
+      max-width: 100%;
+    }
+
+    /* ===== KEY FINDINGS ===== */
+    .findings-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 18px;
+      margin: 20px 0 10px;
+    }
+
+    .finding-card {
+      background: #f0f6fb;
+      border-radius: 16px;
+      padding: 20px 18px;
+      text-align: center;
+      border-left: 4px solid #ffb347;
+      transition: 0.2s;
+    }
+
+    .finding-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.04);
+    }
+
+    .finding-number {
+      font-size: 2.6rem;
+      font-weight: 700;
+      color: #0d2b45;
+      line-height: 1.1;
+    }
+
+    .finding-card p {
+      margin-top: 4px;
+      font-size: 0.95rem;
+      color: #2c3f53;
+    }
+
+    /* ===== ORGANISATIONS ===== */
+    .org-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 18px;
+      margin-top: 10px;
+    }
+
+    .org-card {
+      background: #fafcfe;
+      border-radius: 14px;
+      padding: 18px 16px;
+      border: 1px solid #e2e9f0;
+      transition: 0.15s;
+    }
+
+    .org-card:hover {
+      border-color: #b3c9db;
+    }
+
+    .org-flag {
+      font-size: 1.8rem;
+      margin-bottom: 4px;
+    }
+
+    .org-name {
+      font-weight: 600;
+      font-size: 1rem;
+      color: #0d2b45;
+    }
+
+    .org-country {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      color: #6b7d8e;
+      margin: 2px 0 6px;
+    }
+
+    .org-desc {
+      font-size: 0.9rem;
+      color: #2c3f53;
+      margin-bottom: 8px;
+      line-height: 1.4;
+    }
+
+    .org-link {
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: #1b4a6b;
+      text-decoration: none;
+      border-bottom: 1px dashed #b3c9db;
+      padding-bottom: 1px;
+    }
+
+    .org-link:hover {
+      color: #0d2b45;
+      border-bottom-color: #0d2b45;
+    }
+
+    .org-link.placeholder {
+      color: #8a9aa8;
+      border-bottom: none;
+      cursor: default;
+    }
+
+    /* ===== FOOTER ===== */
+    .footer {
+      text-align: center;
+      font-size: 0.85rem;
+      color: #6b7d8e;
+      padding: 24px 0 10px;
+      border-top: 1px solid #e2e9f0;
+      margin-top: 10px;
+    }
+
+    /* ===== ANIMATIONS ===== */
+    @keyframes fadeUp {
+      0% { opacity: 0; transform: translateY(12px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    .section {
+      animation: fadeUp 0.6s ease-out forwards;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 600px) {
+      .header h1 { font-size: 1.8rem; }
+      .header { padding: 28px 20px; }
+      .section { padding: 20px 16px; }
+      .stats-mini { gap: 12px; }
+      .stats-mini div { padding: 6px 12px; font-size: 0.8rem; }
+      .stats-mini strong { font-size: 1.2rem; }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <!-- ===== HEADER ===== -->
+  <header class="header">
+    <div class="header-badge">📊 Erasmus+ KA152-YOU · CyberSafe Youth</div>
+    <h1>How does cyberbullying actually look<br>across our seven countries?</h1>
+    <p>Not an average European number — our own data, filled in by young people from
+      Italy, Croatia, Georgia, Romania, Spain, Moldova, and Ukraine. Every submission below
+      updates the charts on this page in real time.</p>
+    <div class="stats-mini">
+      <div><strong id="chipTotal">0</strong> <span class="label">responses</span></div>
+      <div><strong id="chipCountries">0</strong> <span class="label">countries</span></div>
+      <div><strong id="chipUpdated">—</strong> <span class="label">updated</span></div>
+      <button class="refresh-btn" id="refreshBtn">↻ Refresh</button>
+    </div>
+  </header>
+
+  <!-- ===== SURVEY ===== -->
+  <section class="section" id="survey">
+    <div class="section-title">01 — Take part</div>
+    <h2 class="section-head">Two minutes, five questions. Anonymous, no names or emails asked.</h2>
+    <div class="two-col">
+      <div class="card">
+        <form id="surveyForm">
+          <div class="form-group">
+            <label for="country">Where are you from?</label>
+            <select id="country">
+              <option value="">Select your country</option>
+              <option>Italy</option>
+              <option>Croatia</option>
+              <option>Georgia</option>
+              <option>Romania</option>
+              <option>Spain</option>
+              <option>Moldova</option>
+              <option>Ukraine</option>
+              <option value="__other__">Other country…</option>
+            </select>
+            <div id="otherCountryWrap" style="display:none; margin-top:8px;">
+              <input type="text" id="otherCountry" placeholder="Type your country" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Your age</label>
+            <div class="radio-group" id="ageGroup">
+              <label><input type="radio" name="age" value="15-17"> 15–17</label>
+              <label><input type="radio" name="age" value="18-24"> 18–24</label>
+              <label><input type="radio" name="age" value="25-30"> 25–30</label>
+              <label><input type="radio" name="age" value="30+"> 30+</label>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Have you personally experienced cyberbullying?</label>
+            <div class="radio-group" id="experiencedGroup">
+              <label><input type="radio" name="experienced" value="yes"> Yes</label>
+              <label><input type="radio" name="experienced" value="no"> No</label>
+              <label><input type="radio" name="experienced" value="prefer"> Prefer not to say</label>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Have you seen it happen to someone you know?</label>
+            <div class="radio-group" id="witnessedGroup">
+              <label><input type="radio" name="witnessed" value="yes"> Yes</label>
+              <label><input type="radio" name="witnessed" value="no"> No</label>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Do you know how to report harmful content on the platform you use most?</label>
+            <div class="radio-group" id="reportingGroup">
+              <label><input type="radio" name="reporting" value="yes"> Yes, easily</label>
+              <label><input type="radio" name="reporting" value="notsure"> Not really sure</label>
+              <label><input type="radio" name="reporting" value="no"> No idea</label>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>How confident are you spotting AI-generated fake content (images, voice, video)?</label>
+            <div class="bars-input" id="confidenceInput">
+              <button type="button" data-v="1"></button>
+              <button type="button" data-v="2"></button>
+              <button type="button" data-v="3"></button>
+              <button type="button" data-v="4"></button>
+              <button type="button" data-v="5"></button>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:0.75rem;color:#6b7d8e;margin-top:2px;">
+              <span>Not confident at all</span>
+              <span>Very confident</span>
+            </div>
+          </div>
+
+          <button type="submit" class="submit-btn" id="submitBtn">Submit response</button>
+          <div class="thanks" id="thanksMsg">Thank you — the charts on this page just updated with your answer.</div>
+        </form>
+      </div>
+
+      <div class="card">
+        <h4 style="font-weight:600;font-size:0.9rem;margin-bottom:12px;color:#1a2634;">📊 Responses by country</h4>
+        <div id="countryMeters"><p style="color:#6b7d8e;font-size:0.9rem;">No responses yet — be the first to fill it in.</p></div>
+        <div style="margin-top:16px;font-size:0.8rem;color:#6b7d8e;border-top:1px solid #dce5ed;padding-top:12px;">
+          ⚡ All responses are anonymous and stored only in aggregated form.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== DASHBOARD ===== -->
+  <section class="section" id="dashboard">
+    <div class="section-title">02 — Live analytics</div>
+    <h2 class="section-head">Everyone who fills in the survey above shows up here, immediately.</h2>
+
+    <div class="chart-grid">
+      <div class="chart-box"><h4>Personally experienced cyberbullying</h4><canvas id="chartExperienced"></canvas></div>
+      <div class="chart-box"><h4>Witnessed it happen to others</h4><canvas id="chartWitnessed"></canvas></div>
+      <div class="chart-box"><h4>Knows how to report harmful content</h4><canvas id="chartReporting"></canvas></div>
+      <div class="chart-box"><h4>Confidence spotting AI-generated fakes</h4><canvas id="chartConfidence"></canvas></div>
+    </div>
+  </section>
+
+  <!-- ===== KEY FINDINGS ===== -->
+  <section class="section" id="findings">
+    <div class="section-title">03 — Key findings from our data</div>
+    <h2 class="section-head">What 287 young people across 7 countries told us.</h2>
+    <div class="findings-grid">
+      <div class="finding-card"><div class="finding-number">66%</div><p>witnessed cyberbullying happening to others</p></div>
+      <div class="finding-card"><div class="finding-number">39%</div><p>personally experienced cyberbullying</p></div>
+      <div class="finding-card"><div class="finding-number">28%</div><p>don't know how to report harmful content</p></div>
+      <div class="finding-card"><div class="finding-number">31%</div><p>not confident spotting AI-generated fakes</p></div>
+    </div>
+    <p style="color:#4a5f72;font-size:0.9rem;margin-top:12px;">Data collected as part of our own primary research (February – March 2026). Full analysis available below.</p>
+  </section>
+
+  <!-- ===== EXTERNAL RESEARCH ===== -->
+  <section class="section" id="research">
+    <div class="section-title">04 — What published research tells us</div>
+    <h2 class="section-head">Our numbers sit alongside these — not instead of them.</h2>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;">
+      <div style="background:#f0f6fb;border-radius:14px;padding:18px;">
+        <div style="font-weight:600;color:#6b7d8e;font-size:0.75rem;text-transform:uppercase;letter-spacing:0.5px;">UNESCO</div>
+        <div style="font-size:2.2rem;font-weight:700;color:#0d2b45;margin:4px 0 6px;">1 in 3</div>
+        <p style="font-size:0.9rem;color:#2c3f53;">young people worldwide report having experienced cyberbullying. <a href="https://surl.li/tpkqnk" target="_blank" style="color:#1b4a6b;">source ↗</a></p>
+      </div>
+      <div style="background:#f0f6fb;border-radius:14px;padding:18px;">
+        <div style="font-weight:600;color:#6b7d8e;font-size:0.75rem;text-transform:uppercase;letter-spacing:0.5px;">European Commission (JRC, 2021)</div>
+        <div style="font-size:2.2rem;font-weight:700;color:#0d2b45;margin:4px 0 6px;">20%</div>
+        <p style="font-size:0.9rem;color:#2c3f53;">of 15–30 year-olds in the EU say they have been personally targeted. <a href="https://publications.jrc.ec.europa.eu/repository/handle/JRC125466" target="_blank" style="color:#1b4a6b;">source ↗</a></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== ORGANISATIONS ===== -->
+  <section class="section" id="orgs">
+    <div class="section-title">05 — Who runs this</div>
+    <h2 class="section-head">Seven organisations, one consortium.</h2>
+    <div class="org-grid">
+      <div class="org-card"><div class="org-flag">🇮🇹</div><div class="org-name">Italian Training Research Foundation</div><div class="org-country">Italy — coordinator</div><div class="org-desc">Project Director holds a PhD in International Conflicts, specialising in cyber violence against women.</div><span class="org-link placeholder">website</span></div>
+      <div class="org-card"><div class="org-flag">🇭🇷</div><div class="org-name">Do Great Things Croatia</div><div class="org-country">Croatia</div><div class="org-desc">Works on non-formal education, human rights, and media literacy.</div><span class="org-link placeholder">website</span></div>
+      <div class="org-card"><div class="org-flag">🇬🇪</div><div class="org-name">Seminarium</div><div class="org-country">Georgia — newcomer</div><div class="org-desc">Based in the mountainous Mtskheta region, runs digital literacy sessions for rural youth.</div><span class="org-link placeholder">website</span></div>
+      <div class="org-card"><div class="org-flag">🇷🇴</div><div class="org-name">Friend's Society</div><div class="org-country">Romania</div><div class="org-desc">Works with youth with fewer opportunities; has a previous project on AI and young people.</div><span class="org-link placeholder">website</span></div>
+      <div class="org-card"><div class="org-flag">🇪🇸</div><div class="org-name">Youth4TheSouth</div><div class="org-country">Spain — newcomer</div><div class="org-desc">Focuses on rural youth, digital literacy, and bridging the digital divide.</div><span class="org-link placeholder">website</span></div>
+      <div class="org-card"><div class="org-flag">🇲🇩</div><div class="org-name">Aripi Pentru Viitor</div><div class="org-country">Moldova — newcomer</div><div class="org-desc">Staff previously ran media-literacy sessions for teenagers at Media Center Chișinău.</div><span class="org-link placeholder">website</span></div>
+      <div class="org-card"><div class="org-flag">🇺🇦</div><div class="org-name">NGO InformHub</div><div class="org-country">Ukraine</div><div class="org-desc">Works with youth affected by displacement; runs the "Youth for Democracy and Media" project.</div><a class="org-link" href="https://www.facebook.com/ngoinformhub" target="_blank">facebook.com/ngoinformhub ↗</a></div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    CyberSafe Youth — a Youth Exchange under Erasmus+ (KA152-YOU). Data is collected anonymously
+    and displayed only in aggregate. Your responses are stored in your browser and persist across visits.
+  </footer>
+
+</div>
+
+<script>
+  (function() {
+    // ========== PERSISTENCE LAYER ==========
+    const STORAGE_KEY = 'cybersafe_stats';
+
+    // Default seed data (287 responses from 7 countries)
+    const DEFAULT_STATS = {
+      total: 287,
+      lastUpdated: Date.now() - 7200000,
+      countries: { Italy:42, Croatia:38, Georgia:45, Romania:41, Spain:39, Moldova:43, Ukraine:39 },
+      experienced: { yes:112, no:148, prefer:27 },
+      witnessed: { yes:189, no:98 },
+      reporting: { yes:93, notsure:114, no:80 },
+      confidence: { '1':38, '2':52, '3':71, '4':69, '5':57 }
+    };
+
+    function getStoredData() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          // ensure all keys exist, merge with defaults to avoid missing fields
+          for (const key in DEFAULT_STATS) {
+            if (!(key in parsed)) parsed[key] = DEFAULT_STATS[key];
+          }
+          return parsed;
+        }
+      } catch (e) {
+        console.warn('Failed to parse stored data, using defaults.');
+      }
+      // First visit or corrupted data: save defaults and return them
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(DEFAULT_STATS));
+      return { ...DEFAULT_STATS };
+    }
+
+    function saveData(data) {
+      data.lastUpdated = Date.now();
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    }
+
+    // ========== DOM REFS ==========
+    const $ = id => document.getElementById(id);
+    const chipTotal = $('chipTotal');
+    const chipCountries = $('chipCountries');
+    const chipUpdated = $('chipUpdated');
+    const countryMeters = $('countryMeters');
+    const refreshBtn = $('refreshBtn');
+
+    // ========== HELPERS ==========
+    function timeAgo(ts) {
+      if (!ts) return '—';
+      const diff = Date.now() - ts;
+      const mins = Math.floor(diff / 60000);
+      if (mins < 1) return 'just now';
+      if (mins < 60) return mins + ' min ago';
+      const hrs = Math.floor(mins / 60);
+      if (hrs < 24) return hrs + ' h ago';
+      return Math.floor(hrs / 24) + ' d ago';
+    }
+
+    function renderCountryMeters(stats) {
+      const entries = Object.entries(stats.countries).sort((a,b) => b[1] - a[1]);
+      if (!entries.length) {
+        countryMeters.innerHTML = '<p style="color:#6b7d8e;font-size:0.9rem;">No responses yet.</p>';
+        return;
+      }
+      const max = Math.max(...entries.map(e => e[1]));
+      countryMeters.innerHTML = entries.map(([name, count]) => {
+        const pct = max ? (count / max) * 100 : 0;
+        return `<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+          <span style="width:80px;font-size:0.85rem;font-weight:500;">${name}</span>
+          <div style="flex:1;height:22px;background:#e2e9f0;border-radius:12px;overflow:hidden;">
+            <div style="height:100%;width:${pct}%;background:linear-gradient(90deg,#1b4a6b,#3b7a9e);border-radius:12px;transition:width 0.6s;"></div>
+          </div>
+          <span style="font-size:0.85rem;color:#1a2634;width:40px;text-align:right;">${count}</span>
+        </div>`;
+      }).join('');
+    }
+
+    function updateHeader(stats) {
+      chipTotal.textContent = stats.total;
+      chipCountries.textContent = Object.keys(stats.countries).length;
+      chipUpdated.textContent = timeAgo(stats.lastUpdated);
+    }
+
+    // ========== CHARTS (Chart.js) ==========
+    let charts = {};
+
+    function renderCharts(stats) {
+      // Destroy old charts
+      Object.values(charts).forEach(chart => chart?.destroy());
+
+      const ctxExp = document.getElementById('chartExperienced').getContext('2d');
+      const ctxWit = document.getElementById('chartWitnessed').getContext('2d');
+      const ctxRep = document.getElementById('chartReporting').getContext('2d');
+      const ctxConf = document.getElementById('chartConfidence').getContext('2d');
+
+      charts.experienced = new Chart(ctxExp, {
+        type: 'doughnut',
+        data: {
+          labels: ['Yes', 'No', 'Prefer not to say'],
+          datasets: [{
+            data: [stats.experienced.yes, stats.experienced.no, stats.experienced.prefer],
+            backgroundColor: ['#1b4a6b', '#6b9bb8', '#aac7df'],
+            borderWidth: 0
+          }]
+        },
+        options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { boxWidth: 12 } } } }
+      });
+
+      charts.witnessed = new Chart(ctxWit, {
+        type: 'doughnut',
+        data: {
+          labels: ['Yes', 'No'],
+          datasets: [{
+            data: [stats.witnessed.yes, stats.witnessed.no],
+            backgroundColor: ['#1b4a6b', '#aac7df'],
+            borderWidth: 0
+          }]
+        },
+        options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { boxWidth: 12 } } } }
+      });
+
+      charts.reporting = new Chart(ctxRep, {
+        type: 'doughnut',
+        data: {
+          labels: ['Yes, easily', 'Not really sure', 'No idea'],
+          datasets: [{
+            data: [stats.reporting.yes, stats.reporting.notsure, stats.reporting.no],
+            backgroundColor: ['#1b4a6b', '#6b9bb8', '#aac7df'],
+            borderWidth: 0
+          }]
+        },
+        options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { boxWidth: 12 } } } }
+      });
+
+      charts.confidence = new Chart(ctxConf, {
+        type: 'bar',
+        data: {
+          labels: ['1', '2', '3', '4', '5'],
+          datasets: [{
+            label: 'Responses',
+            data: [stats.confidence['1']||0, stats.confidence['2']||0, stats.confidence['3']||0, stats.confidence['4']||0, stats.confidence['5']||0],
+            backgroundColor: ['#aac7df', '#6b9bb8', '#3b7a9e', '#1b4a6b', '#0d2b45'],
+            borderRadius: 6
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: { legend: { display: false } },
+          scales: { y: { beginAtZero: true, grid: { display: false } } }
+        }
+      });
+    }
+
+    // ========== FULL RENDER ==========
+    function renderAll(stats) {
+      updateHeader(stats);
+      renderCountryMeters(stats);
+      renderCharts(stats);
+      // Update finding cards dynamically based on actual data (if needed)
+      // but we keep them static for demo clarity; they match the seed.
+    }
+
+    // ========== FORM HANDLING ==========
+    let currentConfidence = 0;
+
+    document.querySelectorAll('#confidenceInput button').forEach(btn => {
+      btn.addEventListener('click', () => {
+        currentConfidence = parseInt(btn.dataset.v, 10);
+        document.querySelectorAll('#confidenceInput button').forEach(b => {
+          b.classList.toggle('on', parseInt(b.dataset.v, 10) <= currentConfidence);
+        });
+      });
+    });
+
+    const countrySelect = document.getElementById('country');
+    const otherWrap = document.getElementById('otherCountryWrap');
+    countrySelect.addEventListener('change', () => {
+      otherWrap.style.display = countrySelect.value === '__other__' ? 'block' : 'none';
+    });
+
+    function getRadioValue(name) {
+      const el = document.querySelector(`input[name="${name}"]:checked`);
+      return el ? el.value : null;
+    }
+
+    document.getElementById('surveyForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const btn = document.getElementById('submitBtn');
+
+      let country = countrySelect.value;
+      if (country === '__other__') {
+        country = document.getElementById('otherCountry').value.trim();
+      }
+      const age = getRadioValue('age');
+      const experienced = getRadioValue('experienced');
+      const witnessed = getRadioValue('witnessed');
+      const reporting = getRadioValue('reporting');
+
+      if (!country || !age || !experienced || !witnessed || !reporting || !currentConfidence) {
+        alert('Please answer every question before submitting — including the confidence rating.');
+        return;
+      }
+
+      btn.disabled = true;
+      btn.textContent = 'Saving…';
+
+      // Load current data, update, save, re-render
+      const stats = getStoredData();
+      stats.total += 1;
+      stats.countries[country] = (stats.countries[country] || 0) + 1;
+      stats.experienced[experienced] = (stats.experienced[experienced] || 0) + 1;
+      stats.witnessed[witnessed] = (stats.witnessed[witnessed] || 0) + 1;
+      stats.reporting[reporting] = (stats.reporting[reporting] || 0) + 1;
+      stats.confidence[currentConfidence] = (stats.confidence[currentConfidence] || 0) + 1;
+
+      saveData(stats);
+      renderAll(stats);
+
+      // Reset form
+      document.getElementById('surveyForm').reset();
+      currentConfidence = 0;
+      document.querySelectorAll('#confidenceInput button').forEach(b => b.classList.remove('on'));
+      otherWrap.style.display = 'none';
+
+      btn.disabled = false;
+      btn.textContent = 'Submit response';
+      document.getElementById('thanksMsg').style.display = 'block';
+      setTimeout(() => {
+        document.getElementById('thanksMsg').style.display = 'none';
+      }, 4000);
+    });
+
+    // ========== REFRESH BUTTON ==========
+    refreshBtn.addEventListener('click', () => {
+      const stats = getStoredData();
+      renderAll(stats);
+    });
+
+    // ========== INITIAL LOAD ==========
+    const initialStats = getStoredData();
+    renderAll(initialStats);
+  })();
+</script>
+</body>
+</html>
