@@ -4,7 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>CyberSafe Youth — Live Data Hub</title>
-Chart.js 
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <style>
     * {
@@ -559,7 +558,7 @@ Chart.js
           </div>
 
           <button type="submit" class="submit-btn" id="submitBtn">Submit response</button>
-          <div class="thanks" id="thanksMsg">Thank you — the charts on this page just updated with your answer.</div>
+          <div class="thanks" id="thanksMsg">Thank you - the charts on this page just updated with your answer.</div>
         </form>
       </div>
 
@@ -575,7 +574,7 @@ Chart.js
 
   <!-- ===== DASHBOARD ===== -->
   <section class="section" id="dashboard">
-    <div class="section-title">02 — Live analytics</div>
+    <div class="section-title">02 - Live analytics</div>
     <h2 class="section-head">Everyone who fills in the survey above shows up here, immediately.</h2>
 
     <div class="chart-grid">
@@ -588,7 +587,7 @@ Chart.js
 
   <!-- ===== KEY FINDINGS ===== -->
   <section class="section" id="findings">
-    <div class="section-title">03 — Key findings from our data</div>
+    <div class="section-title">03 - Key findings from our data</div>
     <h2 class="section-head">What 287 young people across 7 countries told us.</h2>
     <div class="findings-grid">
       <div class="finding-card"><div class="finding-number">66%</div><p>witnessed cyberbullying happening to others</p></div>
@@ -596,12 +595,12 @@ Chart.js
       <div class="finding-card"><div class="finding-number">28%</div><p>don't know how to report harmful content</p></div>
       <div class="finding-card"><div class="finding-number">31%</div><p>not confident spotting AI-generated fakes</p></div>
     </div>
-    <p style="color:#4a5f72;font-size:0.9rem;margin-top:12px;">Data collected as part of our own primary research (February – March 2026). Full analysis available below.</p>
+    <p style="color:#4a5f72;font-size:0.9rem;margin-top:12px;">Data collected as part of our own primary research (June – September 2026). Full analysis available below.</p>
   </section>
 
   <!-- ===== EXTERNAL RESEARCH ===== -->
   <section class="section" id="research">
-    <div class="section-title">04 — What published research tells us</div>
+    <div class="section-title">04 - What published research tells us</div>
     <h2 class="section-head">Our numbers sit alongside these — not instead of them.</h2>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;">
       <div style="background:#f0f6fb;border-radius:14px;padding:18px;">
@@ -622,18 +621,18 @@ Chart.js
     <div class="section-title">05 — Who runs this</div>
     <h2 class="section-head">Seven organisations, one consortium.</h2>
     <div class="org-grid">
-      <div class="org-card"><div class="org-flag">🇮🇹</div><div class="org-name">Italian Training Research Foundation</div><div class="org-country">Italy — coordinator</div><div class="org-desc">Project Director holds a PhD in International Conflicts, specialising in cyber violence against women.</div><span class="org-link placeholder">website</span></div>
-      <div class="org-card"><div class="org-flag">🇭🇷</div><div class="org-name">Do Great Things Croatia</div><div class="org-country">Croatia</div><div class="org-desc">Works on non-formal education, human rights, and media literacy.</div><span class="org-link placeholder">website</span></div>
-      <div class="org-card"><div class="org-flag">🇬🇪</div><div class="org-name">Seminarium</div><div class="org-country">Georgia — newcomer</div><div class="org-desc">Based in the mountainous Mtskheta region, runs digital literacy sessions for rural youth.</div><span class="org-link placeholder">website</span></div>
-      <div class="org-card"><div class="org-flag">🇷🇴</div><div class="org-name">Friend's Society</div><div class="org-country">Romania</div><div class="org-desc">Works with youth with fewer opportunities; has a previous project on AI and young people.</div><span class="org-link placeholder">website</span></div>
-      <div class="org-card"><div class="org-flag">🇪🇸</div><div class="org-name">Youth4TheSouth</div><div class="org-country">Spain — newcomer</div><div class="org-desc">Focuses on rural youth, digital literacy, and bridging the digital divide.</div><span class="org-link placeholder">website</span></div>
-      <div class="org-card"><div class="org-flag">🇲🇩</div><div class="org-name">Aripi Pentru Viitor</div><div class="org-country">Moldova — newcomer</div><div class="org-desc">Staff previously ran media-literacy sessions for teenagers at Media Center Chișinău.</div><span class="org-link placeholder">website</span></div>
-      <div class="org-card"><div class="org-flag">🇺🇦</div><div class="org-name">NGO InformHub</div><div class="org-country">Ukraine</div><div class="org-desc">Works with youth affected by displacement; runs the "Youth for Democracy and Media" project.</div><a class="org-link" href="https://www.facebook.com/ngoinformhub" target="_blank">facebook.com/ngoinformhub ↗</a></div>
+      <div class="org-card"><div class="org-flag">🇮🇹</div><div class="org-name">Italian Training Research Foundation</div><div class="org-country">Italy - coordinator</div><div class="org-desc">Project Director holds a PhD in International Conflicts, specialising in cyber violence against women.</div><span class="org-link placeholder">website</span></div>
+      <div class="org-card"><div class="org-flag">🇭🇷</div><div class="org-name">Do Great Things Croatia</div><div class="org-country">Croatia</div><div class="org-desc">Works on non-formal education, human rights, and media literacy.</div></div>
+      <div class="org-card"><div class="org-flag">🇬🇪</div><div class="org-name">Seminarium</div><div class="org-country">Georgia - newcomer</div><div class="org-desc">Based in the mountainous Mtskheta region, runs digital literacy sessions for rural youth.</div></div>
+      <div class="org-card"><div class="org-flag">🇷🇴</div><div class="org-name">Friend's Society</div><div class="org-country">Romania</div><div class="org-desc">Works with youth with fewer opportunities; has a previous project on AI and young people.</div></div>
+      <div class="org-card"><div class="org-flag">🇪🇸</div><div class="org-name">Youth4TheSouth</div><div class="org-country">Spain - newcomer</div><div class="org-desc">Focuses on rural youth, digital literacy, and bridging the digital divide.</div></div>
+      <div class="org-card"><div class="org-flag">🇲🇩</div><div class="org-name">Aripi Pentru Viitor</div><div class="org-country">Moldova - newcomer</div><div class="org-desc">Staff previously ran media-literacy sessions for teenagers at Media Center Chișinău.</div><span class="org-link placeholder">website</span></div>
+      <div class="org-card"><div class="org-flag">🇺🇦</div><div class="org-name">NGO InformHub</div><div class="org-country">Ukraine</div><div class="org-desc">Works with youth affected by displacement; runs the "Youth for Democracy and Media" project.</div></div>
     </div>
   </section>
 
   <footer class="footer">
-    CyberSafe Youth — a Youth Exchange under Erasmus+ (KA152-YOU). Data is collected anonymously
+    CyberSafe Youth - a Youth Exchange under Erasmus+ (KA152-YOU). Data is collected anonymously
     and displayed only in aggregate. Your responses are stored in your browser and persist across visits.
   </footer>
 
